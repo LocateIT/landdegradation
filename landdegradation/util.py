@@ -11,7 +11,7 @@ from landdegradation.schemas.schemas import CloudResults, CloudResultsSchema, Ur
 
 
 # Google cloud storage bucket for output
-BUCKET = "ldmt"
+BUCKET = "ldms"
 
 # Number of minutes a GEE task is allowed to run before timing out and being 
 # cancelled
