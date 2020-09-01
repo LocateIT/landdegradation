@@ -22,7 +22,7 @@ setup(
     long_description=long_description,
 
     # The project's main homepage.
-    url='https://github.com/ConservationInternational/landdegradation',
+    url='https://github.com/LocateIT/landdegradation',
 
     # Author details
     author='Conservation International',
