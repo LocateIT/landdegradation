@@ -35,6 +35,7 @@ class GEETaskFailure(GEEError):
     """Error running task on GEE"""
 
     def __init__(self, task):
-        super(GEEError, self).__init__("Task {} failed".format(task.status().get('id')))
-        print(task.status())
+        # super(GEEError, self).__init__("Task {} failed".format(task.status().get('id')))
+        super(GEEError, Self).__init__("Task {} failed".format(task))
+        print(task)
         self.task = task
