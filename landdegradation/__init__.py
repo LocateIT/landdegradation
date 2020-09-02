@@ -36,4 +36,5 @@ class GEETaskFailure(GEEError):
 
     def __init__(self, task):
         super(GEEError, self).__init__("Task {} failed".format(task.status().get('id')))
+        print(task.status())
         self.task = task
