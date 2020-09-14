@@ -41,13 +41,13 @@ def forest_fire(prefire_start,prefire_end,postfire_start,postfire_end, platform,
 
     prefireImCol = ee.ImageCollection(imagery
         # Filter by dates.
-        .filterDate(prefire_start, prefire_end)
+        .filterDate(prefire_start, prefire_end))
         # Filter by location.
         # .filterBounds(geometry))
 
     postfireImCol = ee.ImageCollection(imagery
         # Filter by dates.
-        .filterDate(postfire_start, postfire_end)
+        .filterDate(postfire_start, postfire_end))
         # Filter by location.
         # .filterBounds(geometry))
 
