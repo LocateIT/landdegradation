@@ -8,7 +8,7 @@ from landdegradation import stats, GEEIOError
 from landdegradation.util import TEImage
 from landdegradation.schemas.schemas import BandInfo
 
-def forest_fire(prefire_start,prefire_end,postfire_start,postfire_end, geometry, platform, EXECUTION_ID,logger):
+def forest_fire(prefire_start,prefire_end,postfire_start,postfire_end, platform, EXECUTION_ID,logger):
     """
     ===========================================================================================
                  BURN SEVERITY MAPPING USING THE NORMALIZED BURN RATIO (NBR)
@@ -31,7 +31,7 @@ def forest_fire(prefire_start,prefire_end,postfire_start,postfire_end, geometry,
         pl = 'Landsat 8'
 
     logger.debug(ee.String('Data selected for analysis: ').cat(pl))
-    logger.debug(ee.String('Fire incident occurred between ').cat(prefire_end).cat(' and ').cat(postfire_start))
+    # logger.debug(ee.String('Fire incident occurred between ').cat(prefire_end).cat(' and ').cat(postfire_start))
 
     # Location
     # area = ee.FeatureCollection(geometry)
@@ -43,13 +43,13 @@ def forest_fire(prefire_start,prefire_end,postfire_start,postfire_end, geometry,
         # Filter by dates.
         .filterDate(prefire_start, prefire_end)
         # Filter by location.
-        .filterBounds(geometry))
+        # .filterBounds(geometry))
 
     postfireImCol = ee.ImageCollection(imagery
         # Filter by dates.
         .filterDate(postfire_start, postfire_end)
         # Filter by location.
-        .filterBounds(geometry))
+        # .filterBounds(geometry))
 
     # logger.debug("Pre-fire Image Collection: "+prefireImCol)
     # logger.debug("Post-fire Image Collection: "+postfireImCol)
@@ -85,11 +85,11 @@ def forest_fire(prefire_start,prefire_end,postfire_start,postfire_end, geometry,
         prefire_CM_ImCol = prefireImCol.map(maskL8sr)
         postfire_CM_ImCol = postfireImCol.map(maskL8sr)
 
-    pre_mos = prefireImCol.mosaic().clip(geometry)
-    post_mos = postfireImCol.mosaic().clip(geometry)
+    pre_mos = prefireImCol.mosaic()
+    post_mos = postfireImCol.mosaic()
 
-    pre_cm_mos = prefire_CM_ImCol.mosaic().clip(geometry)
-    post_cm_mos = postfire_CM_ImCol.mosaic().clip(geometry)
+    pre_cm_mos = prefire_CM_ImCol.mosaic()
+    post_cm_mos = postfire_CM_ImCol.mosaic()
 
     if platform == 'S2' or platform == 's2':
         preNBR = pre_cm_mos.normalizedDifference(['B8', 'B12'])
