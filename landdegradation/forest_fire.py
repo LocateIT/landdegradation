@@ -51,8 +51,8 @@ def forest_fire(prefire_start,prefire_end,postfire_start,postfire_end, geometry,
         # Filter by location.
         .filterBounds(area))
 
-    logger.debug("Pre-fire Image Collection: "+prefireImCol)
-    logger.debug("Post-fire Image Collection: "+postfireImCol)
+    # logger.debug("Pre-fire Image Collection: "+prefireImCol)
+    # logger.debug("Post-fire Image Collection: "+postfireImCol)
 
     def maskS2sr(image):
         # Bits 10 and 11 are clouds and cirrus, respectively.
