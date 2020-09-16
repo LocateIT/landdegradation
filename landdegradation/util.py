@@ -168,7 +168,6 @@ class TEImage(object):
                 out_name = '{}_{}_{}'.format(execution_id, task_name, n)
             else:
                 out_name = '{}_{}'.format(execution_id, n)
-            if task_name == ''
 
             export = {'image': self.image,
                       'description': out_name,
@@ -216,7 +215,6 @@ class TEImage(object):
                 out_name = '{}_{}_{}'.format(execution_id, task_name, n)
             else:
                 out_name = '{}_{}'.format(execution_id, n)
-            if task_name == ''
 
             export = {'image': self.image,
                       'description': out_name,
