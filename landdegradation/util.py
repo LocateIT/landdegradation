@@ -168,14 +168,63 @@ class TEImage(object):
                 out_name = '{}_{}_{}'.format(execution_id, task_name, n)
             else:
                 out_name = '{}_{}'.format(execution_id, n)
+            if task_name == ''
 
             export = {'image': self.image,
                       'description': out_name,
                       'fileNamePrefix': out_name,
                       'bucket': BUCKET,
-                      'maxPixels': 1e10,
+                      'maxPixels': 1e13,
                       'crs': crs,
                       'scale': ee.Number(proj.nominalScale()).getInfo(),
+                      'region': get_coords(geojson)}
+            t = gee_task(ee.batch.Export.image.toCloudStorage(**export),
+                         out_name, logger)
+            tasks.append(t)
+            n+=1
+            
+        logger.debug("Exporting to cloud storage.")
+        urls = []
+        for task in tasks:
+            task.join()
+            urls.extend(task.get_urls())
+
+        gee_results = CloudResults(task_name,
+                                   self.band_info,
+                                   urls)
+        results_schema = CloudResultsSchema()
+        json_results = results_schema.dump(gee_results)
+
+        return json_results
+
+    # scale issues temporary fix 
+    def export_forest_fire(self, geojsons, task_name, crs, logger, execution_id=None, 
+        proj=None):
+        "Export layers to cloud storage"
+        if not execution_id:
+            execution_id = str(random.randint(1000000, 99999999))
+        else:
+            execution_id = execution_id
+
+        if not proj:
+            proj = self.image.projection()
+
+        tasks = []
+        n = 1
+        for geojson in geojsons:
+            if task_name:
+                out_name = '{}_{}_{}'.format(execution_id, task_name, n)
+            else:
+                out_name = '{}_{}'.format(execution_id, n)
+            if task_name == ''
+
+            export = {'image': self.image,
+                      'description': out_name,
+                      'fileNamePrefix': out_name,
+                      'bucket': BUCKET,
+                      'maxPixels': 1e13,
+                      'crs': crs,
+                      'scale': 30,
                       'region': get_coords(geojson)}
             t = gee_task(ee.batch.Export.image.toCloudStorage(**export),
                          out_name, logger)
