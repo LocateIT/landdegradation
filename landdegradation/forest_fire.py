@@ -32,7 +32,7 @@ def forest_fire(geometry,prefire_start,prefire_end,postfire_start,postfire_end, 
 
     # logger.debug(ee.String('Data selected for analysis: ').cat(pl))
     # logger.debug(ee.String('Fire incident occurred between ').cat(prefire_end).cat(' and ').cat(postfire_start))
-    var geom = ee.Geometry.Polygon(geometry)
+    geom = ee.Geometry.Polygon(geometry)
     # Location
     area = ee.FeatureCollection(geom)
 
