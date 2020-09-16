@@ -163,6 +163,8 @@ class TEImage(object):
 
         tasks = []
         n = 1
+        
+        logger.debug(ee.Number(proj.nominalScale()).getInfo())
         for geojson in geojsons:
             if task_name:
                 out_name = '{}_{}_{}'.format(execution_id, task_name, n)
