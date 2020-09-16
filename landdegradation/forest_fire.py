@@ -104,7 +104,7 @@ def forest_fire(geometry,prefire_start,prefire_end,postfire_start,postfire_end, 
     # Scale product to USGS standards
     dNBR = dNBR_unscaled.multiply(1000)
 
-    return TEImage(dNBR.addBand(preNBR).addBand(postNBR),
+    return TEImage(dNBR.addBands(preNBR).addBands(postNBR),
         [BandInfo("dNBR image", metadata={'prefire_start':prefire_start,'prefire_end':prefire_end, 'postfire_start':postfire_start, 'postfire_end':postfire_end}),
          BandInfo("Prefire Normalized Burn Ratio",metadata={'prefire_start':prefire_start,'prefire_end':prefire_end}),
          BandInfo("Postfire Normalized Burn Ratio",metadata={'postfire_start':postfire_start, 'postfire_end':postfire_end})])
