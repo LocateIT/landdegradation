@@ -36,7 +36,7 @@ def climate_quality(year, geometry, EXECUTION_ID,logger):
     aridityIndex = prec.divide(pet)
 
     return TEImage(aridityIndex.clip(geometry),
-        [BandInfo("Aridity Index", add_to_map=True, metadata={'year':year)])
+        [BandInfo("Aridity Index", add_to_map=True, metadata={'year':year})])
 
 
 
