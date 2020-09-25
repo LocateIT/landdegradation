@@ -21,7 +21,7 @@ def climate_quality(year, geometry, EXECUTION_ID,logger):
     logger.debug("Entering climate quality function.")
     # params include AOI, year, 
     terra_climate = (ee.ImageCollection('IDAHO_EPSCOR/TERRACLIMATE')
-                  .filter(ee.Filter.date('{year}-01-01', '{year}-12-31'))
+                  .filter(ee.Filter.date('{}-01-01'.format(year), '{}-12-31'.format(year)))
                  )
 
     # calculate yearly mean
