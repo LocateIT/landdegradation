@@ -185,6 +185,9 @@ class TEImage(object):
             n+=1
             
         logger.debug("Exporting to cloud storage.")
+        
+        logger.debug("{}".format(self.image.getThumbURL({region:geometry,dimensions: 2058,format:'tiff'})))
+
         urls = []
         for task in tasks:
             task.join()
