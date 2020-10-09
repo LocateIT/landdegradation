@@ -186,7 +186,7 @@ class TEImage(object):
             
         logger.debug("Exporting to cloud storage.")
         
-        logger.debug("{}".format(self.image.getThumbURL({'region':get_coords(geojson)},'dimensions': 2058,'format':'tiff'})))
+        logger.debug("{}".format(self.image.getThumbURL({'region':get_coords(geojson),'dimensions': 2058,'format':'geotiff'})))
 
         urls = []
         for task in tasks:
