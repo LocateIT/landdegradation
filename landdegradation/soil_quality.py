@@ -36,15 +36,15 @@ def soil_quality(depth, geometry, EXECUTION_ID,logger):
     texture = ee.Image("OpenLandMap/SOL/SOL_TEXTURE-CLASS_USDA-TT_M/v02").clip(geometry)
 
     # select texture based on depth 
-    if(depth < 10):
+    if depth < 10:
         texture = texture.select(['b0'])
-    else if(depth >= 10 or depth < 30):
+    elif depth >= 10 or depth < 30:
         texture = texture.select(['b10'])
-    else if(depth >= 30 or depth < 60):
+    elif depth >= 30 or depth < 60:
         texture = texture.select(['b30'])
-    else if(depth >= 60 or depth < 100):
+    elif depth >= 60 or depth < 100:
         texture = texture.select(['b60'])
-    else if(depth >= 100 or depth < 200):
+    elif depth >= 100 or depth < 200:
         texture = texture.select(['b100'])
     else:
         texture = texture.select(['b200'])
