@@ -198,7 +198,8 @@ class TEImage(object):
         for task in tasks:
             task.join()
             urls.extend(task.get_urls())
-
+        
+        logger.debug('{}'.format(urls))
         gee_results = CloudResults(task_name,
                                    self.band_info,
                                    '{}'.format(thumbUrl))
