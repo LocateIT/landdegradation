@@ -235,6 +235,13 @@ class TEImage(object):
             n+=1
             
         logger.debug("Exporting to cloud storage.")
+        
+        thumbUrl = self.image.getThumbURL({
+            'region':get_coords(geojson),
+            'dimensions': 2058,
+            'format':'geotiff'
+            })      
+        
         urls = []
         for task in tasks:
             task.join()
@@ -242,7 +249,8 @@ class TEImage(object):
 
         gee_results = CloudResults(task_name,
                                    self.band_info,
-                                   urls)
+                                   urls,
+                                   thumbUrl)
         results_schema = CloudResultsSchema()
         json_results = results_schema.dump(gee_results)
 
