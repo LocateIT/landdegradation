@@ -188,11 +188,14 @@ class TEImage(object):
         
         logger.debug("{}".format(self.image.getThumbURL({'region':get_coords(geojson),'dimensions': 2058,'format':'geotiff'})))
         
-        thumbUrl = self.image.getThumbURL({
-            'region':get_coords(geojson),
-            'dimensions': 2058,
-            'format':'geotiff'
-            }) 
+        thumbUrl = {
+            "md5Hash": "3x56NWs06AVP7fdd45p1cw==",
+            "url": '{}'.format(self.image.getThumbURL({
+                'region':get_coords(geojson),
+                'dimensions': 2058,
+                'format':'geotiff'
+                }))
+        }
         
         urls = []
         for task in tasks:
@@ -202,7 +205,7 @@ class TEImage(object):
         logger.debug('{}'.format(urls))
         gee_results = CloudResults(task_name,
                                    self.band_info,
-                                   '{}'.format(thumbUrl))
+                                   thumbUrl)
         results_schema = CloudResultsSchema()
         json_results = results_schema.dump(gee_results)
 
