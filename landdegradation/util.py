@@ -1,3 +1,4 @@
+  
 import json
 import ee
 import threading
@@ -94,12 +95,14 @@ class gee_task(threading.Thread):
             raise GEETaskFailure('Failed to list urls for results from {}'.format(self.task))
 
         items = resp.json()['items']
+        
 
         if len(items) < 1:
             raise GEETaskFailure('No urls were found for {}'.format(self.task))
         else:
             urls = []
             for item in items:
+                self.logger.debug("items are {} and {}".format(item['mediaLink'], item['md5Hash']))
                 urls.append(Url(item['mediaLink'], item['md5Hash']))
             return urls
 
@@ -163,34 +166,49 @@ class TEImage(object):
 
         tasks = []
         n = 1
-        for geojson in geojsons:
-            if task_name:
-                out_name = '{}_{}_{}'.format(execution_id, task_name, n)
-            else:
-                out_name = '{}_{}'.format(execution_id, n)
+        
+#         logger.debug(ee.Number(proj.nominalScale()).getInfo())
+#         for geojson in geojsons:
+#             if task_name:
+#                 out_name = '{}_{}_{}'.format(execution_id, task_name, n)
+#             else:
+#                 out_name = '{}_{}'.format(execution_id, n)
 
-            export = {'image': self.image,
-                      'description': out_name,
-                      'fileNamePrefix': out_name,
-                      'bucket': BUCKET,
-                      'maxPixels': 1e13,
-                      'crs': crs,
-                      'scale': ee.Number(proj.nominalScale()).getInfo(),
-                      'region': get_coords(geojson)}
-            t = gee_task(ee.batch.Export.image.toCloudStorage(**export),
-                         out_name, logger)
-            tasks.append(t)
-            n+=1
+#             export = {'image': self.image,
+#                       'description': out_name,
+#                       'fileNamePrefix': out_name,
+#                       'bucket': BUCKET,
+#                       'maxPixels': 1e13,
+#                       'crs': crs,
+#                       'scale': 30,
+#                       'region': get_coords(geojson)}
+#             t = gee_task(ee.batch.Export.image.toCloudStorage(**export),
+#                          out_name, logger)
+#             tasks.append(t)
+#             n+=1
             
-        logger.debug("Exporting to cloud storage.")
-        urls = []
-        for task in tasks:
-            task.join()
-            urls.extend(task.get_urls())
-
+#         logger.debug("Exporting to cloud storage.")
+        
+        logger.debug("{}".format(self.image.getThumbURL({'region':get_coords(geojsons[0]),'dimensions': 2058,'format':'geotiff'})))
+        
+        thumbUrl = [{
+            'md5Hash':'8jkNdordbiWr5Squ8V4LpA==',
+            "url": '{}'.format(self.image.getThumbURL({
+                'region':get_coords(geojsons[0]),
+                'dimensions': 2058,
+                'format':'geotiff'
+                }))
+        }]
+        
+#         urls = []
+#         for task in tasks:
+#             task.join()
+#             urls.extend(task.get_urls())
+        
+#         logger.debug('{}'.format(urls[0]))
         gee_results = CloudResults(task_name,
                                    self.band_info,
-                                   urls)
+                                   thumbUrl)
         results_schema = CloudResultsSchema()
         json_results = results_schema.dump(gee_results)
 
@@ -230,6 +248,7 @@ class TEImage(object):
             n+=1
             
         logger.debug("Exporting to cloud storage.")
+        
         urls = []
         for task in tasks:
             task.join()
