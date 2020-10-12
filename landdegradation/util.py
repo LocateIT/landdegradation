@@ -189,7 +189,6 @@ class TEImage(object):
         logger.debug("{}".format(self.image.getThumbURL({'region':get_coords(geojson),'dimensions': 2058,'format':'geotiff'})))
         
         thumbUrl = [{
-            "md5Hash": "3x56NWs06AVP7fdd45p1cw==",
             "url": '{}'.format(self.image.getThumbURL({
                 'region':get_coords(geojson),
                 'dimensions': 2058,
