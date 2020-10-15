@@ -208,7 +208,7 @@ class TEImage(object):
 #         logger.debug('{}'.format(urls[0]))
         gee_results = CloudResults(task_name,
                                    self.band_info,
-                                   thumbUrl)
+                                   urls)
         results_schema = CloudResultsSchema()
         json_results = results_schema.dump(gee_results)
 
