@@ -166,9 +166,26 @@ class TEImage(object):
 
         tasks = []
         n = 1
-        
+        for geojson in geojsons:
+            if task_name:
+                out_name = '{}_{}_{}'.format(execution_id, task_name, n)
+            else:
+                out_name = '{}_{}'.format(execution_id, n)
 
-        
+            export = {'image': self.image,
+                      'description': out_name,
+                      'fileNamePrefix': out_name,
+                      'bucket': BUCKET,
+                      'maxPixels': 1e13,
+                      'crs': crs,
+                      'scale': ee.Number(proj.nominalScale()).getInfo(),
+                      'region': get_coords(geojson)}
+            t = gee_task(ee.batch.Export.image.toCloudStorage(**export),
+                         out_name, logger)
+            tasks.append(t)
+            n+=1
+            
+        logger.debug("Exporting to cloud storage.")
         urls = []
         for task in tasks:
             task.join()
@@ -177,11 +194,11 @@ class TEImage(object):
         gee_results = CloudResults(task_name,
                                    self.band_info,
                                    urls)
-
         results_schema = CloudResultsSchema()
         json_results = results_schema.dump(gee_results)
 
         return json_results
+
 
     # scale issues temporary fix 
     def export_forest_fire(self, geojsons, task_name, crs, logger, execution_id=None, 
