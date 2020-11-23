@@ -8,22 +8,24 @@ from landdegradation.util import TEImage
 from landdegradation.schemas.schemas import BandInfo
 
 
-def soc(geojson,year_start, year_end, fl, remap_matrix, dl_annual_lc, EXECUTION_ID, 
+def soc(geometry,year_start, year_end, fl, remap_matrix, dl_annual_lc, EXECUTION_ID, 
         logger):
     """
     Calculate SOC indicator.
     """
     logger.debug("Entering soc function.")
-
+    geom = ee.Geometry.Polygon(geometry)
+    # Location
+    area = ee.FeatureCollection(geom)
     # soc
-    soc = ee.Image("users/geflanddegradation/toolbox_datasets/soc_sgrid_30cm").clip(geojson)
+    soc = ee.Image("users/geflanddegradation/toolbox_datasets/soc_sgrid_30cm").clip(area)
     soc_t0 = soc.updateMask(soc.neq(-32768))
 
     # land cover - note it needs to be reprojected to match soc so that it can 
     # be output to cloud storage in the same stack
     lc = ee.Image("users/geflanddegradation/toolbox_datasets/lcov_esacc_1992_2018") \
             .select(ee.List.sequence(year_start - 1992, year_end - 1992, 1)) \
-            .clip(geojson) \
+            .clip(area) \
             .reproject(crs=soc.projection())
             
     lc = lc.where(lc.eq(9999), -32768)
@@ -32,7 +34,7 @@ def soc(geojson,year_start, year_end, fl, remap_matrix, dl_annual_lc, EXECUTION_
     if fl == 'per pixel':
         # Setup a raster of climate regimes to use for coding Fl automatically
         climate = ee.Image("users/geflanddegradation/toolbox_datasets/ipcc_climate_zones") \
-            .clip(geojson) \
+            .clip(area) \
             .remap([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], 
                    [0, 2, 1, 2, 1, 2, 1, 2, 1, 5, 4, 4, 3])
         clim_fl = climate.remap([0, 1, 2, 3, 4, 5],
