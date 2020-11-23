@@ -296,7 +296,7 @@ def productivity_state(geometry,year_bl_start, year_bl_end,
     geom = ee.Geometry.Polygon(geometry)
     # Location
     area = ee.FeatureCollection(geom)
-    ndvi_1yr = ee.Image(ndvi_gee_dataset)
+    ndvi_1yr = ee.Image(ndvi_gee_dataset).clip(area)
 
     # compute min and max of annual ndvi for the baseline period
     bl_ndvi_range = ndvi_1yr.select(ee.List(['y{}'.format(i) for i in range(year_bl_start, year_bl_end + 1)])) \
@@ -345,7 +345,7 @@ def productivity_state(geometry,year_bl_start, year_bl_end,
 
     # difference between start and end clusters >= 2 means improvement (<= -2 
     # is degradation)
-    classes_chg = tg_classes.subtract(bl_classes).where(bl_ndvi_mean.subtract(tg_ndvi_mean).abs().lte(100), 0)
+    classes_chg = tg_classes.subtract(bl_classes).where(bl_ndvi_mean.subtract(tg_ndvi_mean).abs().lte(100), 0).clip(area)
 
     band_infos = [BandInfo("Productivity state (degradation)", add_to_map=True,
                         metadata={'year_bl_start': year_bl_start, 'year_bl_end': year_bl_end, 'year_tg_start': year_tg_start, 'year_tg_end': year_tg_end}),
@@ -353,4 +353,4 @@ def productivity_state(geometry,year_bl_start, year_bl_end,
                   BandInfo("Productivity state classes", metadata={'year_start': year_tg_start, 'year_end': year_tg_end}),
                   BandInfo("Productivity state NDVI mean", metadata={'year_start': year_bl_start, 'year_end': year_bl_end}),
                   BandInfo("Productivity state NDVI mean", metadata={'year_start': year_tg_start, 'year_end': year_tg_end})]
-    return TEImage(classes_chg.addBands(bl_classes).addBands(tg_classes).addBands(bl_ndvi_mean).addBands(tg_ndvi_mean).clip(area).int16(), band_infos)
+    return TEImage(classes_chg.addBands(bl_classes).addBands(tg_classes).addBands(bl_ndvi_mean).addBands(tg_ndvi_mean).int16(), band_infos)
