@@ -8,15 +8,17 @@ from landdegradation.util import TEImage
 from landdegradation.schemas.schemas import BandInfo
 
 
-def land_cover(year_baseline, year_target, trans_matrix,
+def land_cover(geometry, year_baseline, year_target, trans_matrix,
                remap_matrix, EXECUTION_ID, logger):
     """
     Calculate land cover indicator.
     """
     logger.debug("Entering land_cover function.")
-
+    geom = ee.Geometry.Polygon(geometry)
+    # Location
+    area = ee.FeatureCollection(geom)
     ## land cover
-    lc = ee.Image("users/geflanddegradation/toolbox_datasets/lcov_esacc_1992_2018")
+    lc = ee.Image("users/geflanddegradation/toolbox_datasets/lcov_esacc_1992_2018").clip(area)
     lc = lc.where(lc.eq(9999), -32768)
     lc = lc.updateMask(lc.neq(-32768))
 
