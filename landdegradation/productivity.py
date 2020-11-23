@@ -142,18 +142,20 @@ def ue_trend(year_start, year_end, ndvi_1yr, climate_1yr, logger):
     return (lf_trend, mk_trend)
 
 
-def productivity_trajectory(year_start, year_end, method, ndvi_gee_dataset,
+def productivity_trajectory(geometry,year_start, year_end, method, ndvi_gee_dataset,
                             climate_gee_dataset, logger):
     logger.debug("Entering productivity_trajectory function.")
-
-    climate_1yr = ee.Image(climate_gee_dataset)
+    geom = ee.Geometry.Polygon(geometry)
+    # Location
+    area = ee.FeatureCollection(geom)
+    climate_1yr = ee.Image(climate_gee_dataset).clip(area)
     climate_1yr = climate_1yr.where(climate_1yr.eq(9999), -32768)
     climate_1yr = climate_1yr.updateMask(climate_1yr.neq(-32768))
 
     if climate_gee_dataset == None and method != 'ndvi_trend':
         raise GEEIOError("Must specify a climate dataset")
 
-    ndvi_dataset = ee.Image(ndvi_gee_dataset)
+    ndvi_dataset = ee.Image(ndvi_gee_dataset).clip(area)
     ndvi_dataset = ndvi_dataset.where(ndvi_dataset.eq(9999), -32768)
     ndvi_dataset = ndvi_dataset.updateMask(ndvi_dataset.neq(-32768))
 
@@ -193,16 +195,18 @@ def productivity_trajectory(year_start, year_end, method, ndvi_gee_dataset,
         .where(mk_trend.abs().lte(kendall90), 0) \
         .where(lf_trend.select('scale').abs().lte(10), 0)
 
-    return TEImage(lf_trend.select('scale').addBands(signif).addBands(mk_trend).unmask(-32768).int16(),
+    return TEImage(lf_trend.select('scale').addBands(signif).addBands(mk_trend).clip(area).unmask(-32768).int16(),
                    [BandInfo("Productivity trajectory (trend)", metadata={'year_start': year_start, 'year_end': year_end}),
                     BandInfo("Productivity trajectory (significance)", add_to_map=True, metadata={'year_start': year_start, 'year_end': year_end}),
                     BandInfo("Mean annual NDVI integral", metadata={'year_start': year_start, 'year_end': year_end})])
 
 
-def productivity_performance(year_start, year_end, ndvi_gee_dataset, geojson,
+def productivity_performance(geometry, year_start, year_end, ndvi_gee_dataset, geojson,
                              EXECUTION_ID, logger):
     logger.debug("Entering productivity_performance function.")
-
+    geom = ee.Geometry.Polygon(geometry)
+    # Location
+    area = ee.FeatureCollection(geom)
     ndvi_1yr = ee.Image(ndvi_gee_dataset)
     ndvi_1yr = ndvi_1yr.where(ndvi_1yr.eq(9999), -32768)
     ndvi_1yr = ndvi_1yr.updateMask(ndvi_1yr.neq(-32768))
@@ -279,17 +283,19 @@ def productivity_performance(year_start, year_end, ndvi_gee_dataset, geojson,
     lp_perf_deg = ee.Image(-32768).where(obs_ratio_2.gte(0.5), 0) \
         .where(obs_ratio_2.lte(0.5), -1)
 
-    return TEImage(lp_perf_deg.addBands(obs_ratio_2.multiply(10000)).addBands(units).unmask(-32768).int16(),
+    return TEImage(lp_perf_deg.addBands(obs_ratio_2.multiply(10000)).addBands(units).clip(area).unmask(-32768).int16(),
                    [BandInfo("Productivity performance (degradation)", add_to_map=True, metadata={'year_start': year_start, 'year_end': year_end}),
                     BandInfo("Productivity performance (ratio)", metadata={'year_start': year_start, 'year_end': year_end}),
                     BandInfo("Productivity performance (units)", metadata={'year_start': year_start})])
 
 
-def productivity_state(year_bl_start, year_bl_end,
+def productivity_state(geometry,year_bl_start, year_bl_end,
                        year_tg_start, year_tg_end,
                        ndvi_gee_dataset, EXECUTION_ID, logger):
     logger.debug("Entering productivity_state function.")
-
+    geom = ee.Geometry.Polygon(geometry)
+    # Location
+    area = ee.FeatureCollection(geom)
     ndvi_1yr = ee.Image(ndvi_gee_dataset)
 
     # compute min and max of annual ndvi for the baseline period
@@ -347,4 +353,4 @@ def productivity_state(year_bl_start, year_bl_end,
                   BandInfo("Productivity state classes", metadata={'year_start': year_tg_start, 'year_end': year_tg_end}),
                   BandInfo("Productivity state NDVI mean", metadata={'year_start': year_bl_start, 'year_end': year_bl_end}),
                   BandInfo("Productivity state NDVI mean", metadata={'year_start': year_tg_start, 'year_end': year_tg_end})]
-    return TEImage(classes_chg.addBands(bl_classes).addBands(tg_classes).addBands(bl_ndvi_mean).addBands(tg_ndvi_mean).int16(), band_infos)
+    return TEImage(classes_chg.addBands(bl_classes).addBands(tg_classes).addBands(bl_ndvi_mean).addBands(tg_ndvi_mean).clip(area).int16(), band_infos)
