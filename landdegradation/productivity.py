@@ -298,7 +298,7 @@ def productivity_performance(geometry, year_start, year_end, ndvi_gee_dataset, g
     obs_ratio = ndvi_avg_proj.divide(raster_perc)
 
     # aggregate obs_ratio to original NDVI data resolution (for modis this step does not change anything)
-    obs_ratio_2 = obs_ratio.reduceResolution(reducer=ee.Reducer.mean(), maxPixels=300000) \
+    obs_ratio_2 = obs_ratio.reduceResolution(reducer=ee.Reducer.mean(), maxPixels=1e15) \
         .reproject(crs=ndvi_1yr.projection())
 
     # create final degradation output layer (9999 is background), 0 is not
