@@ -175,7 +175,7 @@ class TEImage(object):
                       'description': out_name,
                       'fileNamePrefix': out_name,
                       'bucket': BUCKET,
-                      'maxPixels': 1e15,
+                      'maxPixels': 1e13,
                       'crs': crs,
                       'scale': ee.Number(proj.nominalScale()).getInfo(),
                       'region': get_coords(geojson)}
