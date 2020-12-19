@@ -230,7 +230,7 @@ def productivity_performance(geometry, year_start, year_end, ndvi_gee_dataset, g
     if(ndvi_gee_dataset == 'users/miswagrace/Landsat_annual_2001_2020'):
         ndvi_gee_dataset = fetchNDVI()
 
-    ndvi_1yr = ee.Image(ndvi_gee_dataset)
+    ndvi_1yr = ee.Image(ndvi_gee_dataset).clip(area)
     ndvi_1yr = ndvi_1yr.where(ndvi_1yr.eq(9999), -32768)
     ndvi_1yr = ndvi_1yr.updateMask(ndvi_1yr.neq(-32768))
 
