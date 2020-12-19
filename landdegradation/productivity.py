@@ -8,6 +8,22 @@ from landdegradation import stats, GEEIOError
 from landdegradation.util import TEImage
 from landdegradation.schemas.schemas import BandInfo
 
+def fetchNDVI():
+    """ Fetch landsat ndvi dataset """
+    dataset = ee.ImageCollection('LANDSAT/LE07/C01/T1_ANNUAL_NDVI')
+    multiband = dataset.toBands()
+    names = multiband.bandNames()
+
+    def renameBand(val):
+        ind = names.indexOf(val)
+        y = ee.String("y")
+        return y.cat(ee.String(names.get(ind)).slice(0,4))
+
+    x = map(renameBand, names.getInfo())
+
+    multiband_renamed = multiband.rename(list(x))
+
+    return multiband_renamed
 
 def ndvi_trend(year_start, year_end, ndvi_1yr, logger):
     """Calculate temporal NDVI analysis.
@@ -155,6 +171,9 @@ def productivity_trajectory(geometry,year_start, year_end, method, ndvi_gee_data
     if climate_gee_dataset == None and method != 'ndvi_trend':
         raise GEEIOError("Must specify a climate dataset")
 
+    if(ndvi_gee_dataset == 'users/miswagrace/Landsat_annual_2001_2020'):
+        ndvi_gee_dataset = fetchNDVI()
+
     ndvi_dataset = ee.Image(ndvi_gee_dataset).clip(area)
     ndvi_dataset = ndvi_dataset.where(ndvi_dataset.eq(9999), -32768)
     ndvi_dataset = ndvi_dataset.updateMask(ndvi_dataset.neq(-32768))
@@ -207,6 +226,10 @@ def productivity_performance(geometry, year_start, year_end, ndvi_gee_dataset, g
     geom = ee.Geometry.Polygon(geometry)
     # Location
     area = ee.FeatureCollection(geom)
+
+    if(ndvi_gee_dataset == 'users/miswagrace/Landsat_annual_2001_2020'):
+        ndvi_gee_dataset = fetchNDVI()
+
     ndvi_1yr = ee.Image(ndvi_gee_dataset)
     ndvi_1yr = ndvi_1yr.where(ndvi_1yr.eq(9999), -32768)
     ndvi_1yr = ndvi_1yr.updateMask(ndvi_1yr.neq(-32768))
@@ -296,6 +319,10 @@ def productivity_state(geometry,year_bl_start, year_bl_end,
     geom = ee.Geometry.Polygon(geometry)
     # Location
     area = ee.FeatureCollection(geom)
+    
+    if(ndvi_gee_dataset == 'users/miswagrace/Landsat_annual_2001_2020'):
+        ndvi_gee_dataset = fetchNDVI()
+
     ndvi_1yr = ee.Image(ndvi_gee_dataset).clip(area)
 
     # compute min and max of annual ndvi for the baseline period
