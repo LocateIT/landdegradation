@@ -104,7 +104,7 @@ def soil_quality(depth, texture_matrix, pmaterial_matrix, geometry, EXECUTION_ID
     # ==========================
     # classify rock fragment based on 3 classes
     rock_fragment = ee.Image("users/miswagrace/rock_fragments")
-    fragmentClass = rock_fragment \ 
+    fragmentClass = rock_fragment \
         .where(rock_fragment.lt(20), 2) \
         .where(rock_fragment.gte(20).And(rock_fragment.lte(60)), 1.3) \
         .where(rock_fragment.gt(60), 1) \
