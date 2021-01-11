@@ -46,7 +46,7 @@ def soil_quality(depth, texture_matrix, pmaterial_matrix, geometry, EXECUTION_ID
     # SLOPE
     # ==========================
 
-    strm = ee.Image("USGS/SRTMGL1_003")
+    srtm = ee.Image("USGS/SRTMGL1_003")
     slope = ee.Terrain.slope(srtm).clip(geometry)
 
     # convert slope to radians
