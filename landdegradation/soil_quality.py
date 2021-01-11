@@ -139,7 +139,7 @@ def soil_quality(depth, texture_matrix, pmaterial_matrix, geometry, EXECUTION_ID
         }).rename('sqi')  
 
     # classify output sqi into 3 classes 
-    sqi = sqi
+    sqi = sqi \
         .where(sqi.lt(1.13), 1) \
         .where(sqi.gte(1.13).And(sqi.lte(1.45)), 2) \
         .where(sqi.gt(1.46), 3)
