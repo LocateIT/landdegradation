@@ -177,24 +177,24 @@ def productivity_trajectory(geometry,year_start, year_end, method, ndvi_gee_data
     else:
         ndvi_1yr = ee.Image(ndvi_gee_dataset).clip(area)
 
-    ndvi_dataset = ndvi_dataset.where(ndvi_dataset.eq(9999), -32768)
-    ndvi_dataset = ndvi_dataset.updateMask(ndvi_dataset.neq(-32768))
+    ndvi_1yr = ndvi_1yr.where(ndvi_1yr.eq(9999), -32768)
+    ndvi_1yr = ndvi_1yr.updateMask(ndvi_1yr.neq(-32768))
 
-    ndvi_mean = ndvi_dataset.select(ee.List(['y{}'.format(i) for i in range(year_start, year_end + 1)])) \
+    ndvi_mean = ndvi_1yr.select(ee.List(['y{}'.format(i) for i in range(year_start, year_end + 1)])) \
         .reduce(ee.Reducer.mean()).rename(['ndvi'])
 
     # Run the selected algorithm
     if method == 'ndvi_trend':
-        lf_trend, mk_trend = ndvi_trend(year_start, year_end, ndvi_dataset, logger)
+        lf_trend, mk_trend = ndvi_trend(year_start, year_end, ndvi_1yr, logger)
     elif method == 'p_restrend':
-        lf_trend, mk_trend = p_restrend(year_start, year_end, ndvi_dataset, climate_1yr, logger)
+        lf_trend, mk_trend = p_restrend(year_start, year_end, ndvi_1yr, climate_1yr, logger)
         if climate_1yr == None:
             climate_1yr = precp_gpcc
     elif method == 's_restrend':
         #TODO: need to code this
         raise GEEIOError("s_restrend method not yet supported")
     elif method == 'ue':
-        lf_trend, mk_trend = ue_trend(year_start, year_end, ndvi_dataset, climate_1yr, logger)
+        lf_trend, mk_trend = ue_trend(year_start, year_end, ndvi_1yr, climate_1yr, logger)
     else:
         raise GEEIOError("Unrecognized method '{}'".format(method))
 
