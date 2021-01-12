@@ -164,7 +164,7 @@ def productivity_trajectory(geometry,year_start, year_end, method, ndvi_gee_data
     geom = ee.Geometry.Polygon(geometry)
     # Location
     area = ee.FeatureCollection(geom)
-    climate_1yr = ee.Image(climate_gee_dataset).clip(area)
+    climate_1yr = ee.Image(climate_gee_dataset).clip(area).multiply(10000)
     climate_1yr = climate_1yr.where(climate_1yr.eq(9999), -32768)
     climate_1yr = climate_1yr.updateMask(climate_1yr.neq(-32768))
 
@@ -230,7 +230,7 @@ def productivity_performance(geometry, year_start, year_end, ndvi_gee_dataset, g
     if(ndvi_gee_dataset == 'users/miswagrace/ndvi_landsat_1999_2020'):
         ndvi_gee_dataset = fetchNDVI()
 
-    ndvi_1yr = ee.Image(ndvi_gee_dataset).clip(area)
+    ndvi_1yr = ee.Image(ndvi_gee_dataset).clip(area).multiply(10000)
     ndvi_1yr = ndvi_1yr.where(ndvi_1yr.eq(9999), -32768)
     ndvi_1yr = ndvi_1yr.updateMask(ndvi_1yr.neq(-32768))
 
@@ -298,7 +298,7 @@ def productivity_performance(geometry, year_start, year_end, ndvi_gee_dataset, g
     obs_ratio = ndvi_avg_proj.divide(raster_perc)
 
     # aggregate obs_ratio to original NDVI data resolution (for modis this step does not change anything)
-    obs_ratio_2 = obs_ratio.reduceResolution(reducer=ee.Reducer.mean(), bestEffort =True, maxPixels=2000) \
+    obs_ratio_2 = obs_ratio.reduceResolution(reducer=ee.Reducer.mean(), maxPixels=2000) \
         .reproject(crs=ndvi_1yr.projection())
 
     # create final degradation output layer (9999 is background), 0 is not
@@ -323,7 +323,7 @@ def productivity_state(geometry,year_bl_start, year_bl_end,
     if(ndvi_gee_dataset == 'users/miswagrace/ndvi_landsat_1999_2020'):
         ndvi_gee_dataset = fetchNDVI()
 
-    ndvi_1yr = ee.Image(ndvi_gee_dataset).clip(area)
+    ndvi_1yr = ee.Image(ndvi_gee_dataset).clip(area).multiply(10000)
 
     # compute min and max of annual ndvi for the baseline period
     bl_ndvi_range = ndvi_1yr.select(ee.List(['y{}'.format(i) for i in range(year_bl_start, year_bl_end + 1)])) \
