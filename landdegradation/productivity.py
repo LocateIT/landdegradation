@@ -227,7 +227,7 @@ def productivity_performance(geometry, year_start, year_end, ndvi_gee_dataset, g
     # Location
     area = ee.FeatureCollection(geom)
 
-    if(ndvi_gee_dataset == 'users/miswagrace/Landsat_annual_2001_2020'):
+    if(ndvi_gee_dataset == 'users/miswagrace/ndvi_landsat_1999_2020'):
         ndvi_gee_dataset = fetchNDVI()
 
     ndvi_1yr = ee.Image(ndvi_gee_dataset).clip(area)
@@ -320,7 +320,7 @@ def productivity_state(geometry,year_bl_start, year_bl_end,
     # Location
     area = ee.FeatureCollection(geom)
     
-    if(ndvi_gee_dataset == 'users/miswagrace/Landsat_annual_2001_2020'):
+    if(ndvi_gee_dataset == 'users/miswagrace/ndvi_landsat_1999_2020'):
         ndvi_gee_dataset = fetchNDVI()
 
     ndvi_1yr = ee.Image(ndvi_gee_dataset).clip(area)
