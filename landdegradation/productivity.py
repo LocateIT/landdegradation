@@ -164,7 +164,7 @@ def productivity_trajectory(geometry,year_start, year_end, method, ndvi_gee_data
     geom = ee.Geometry.Polygon(geometry)
     # Location
     area = ee.FeatureCollection(geom)
-    climate_1yr = ee.Image(climate_gee_dataset).clip(area)
+    climate_1yr = ee.Image(climate_gee_dataset).clip(area).multiply(10000)
     climate_1yr = climate_1yr.where(climate_1yr.eq(9999), -32768)
     climate_1yr = climate_1yr.updateMask(climate_1yr.neq(-32768))
 
@@ -230,7 +230,7 @@ def productivity_performance(geometry, year_start, year_end, ndvi_gee_dataset, g
     if(ndvi_gee_dataset == 'users/miswagrace/ndvi_landsat_1999_2020'):
         ndvi_gee_dataset = fetchNDVI()
 
-    ndvi_1yr = ee.Image(ndvi_gee_dataset).clip(area)
+    ndvi_1yr = ee.Image(ndvi_gee_dataset).clip(area).multiply(10000)
     ndvi_1yr = ndvi_1yr.where(ndvi_1yr.eq(9999), -32768)
     ndvi_1yr = ndvi_1yr.updateMask(ndvi_1yr.neq(-32768))
 
@@ -323,7 +323,7 @@ def productivity_state(geometry,year_bl_start, year_bl_end,
     if(ndvi_gee_dataset == 'users/miswagrace/ndvi_landsat_1999_2020'):
         ndvi_gee_dataset = fetchNDVI()
 
-    ndvi_1yr = ee.Image(ndvi_gee_dataset).clip(area)
+    ndvi_1yr = ee.Image(ndvi_gee_dataset).clip(area).multiply(10000)
 
     # compute min and max of annual ndvi for the baseline period
     bl_ndvi_range = ndvi_1yr.select(ee.List(['y{}'.format(i) for i in range(year_bl_start, year_bl_end + 1)])) \
