@@ -171,7 +171,7 @@ def productivity_trajectory(geometry,year_start, year_end, method, ndvi_gee_data
     if climate_gee_dataset == None and method != 'ndvi_trend':
         raise GEEIOError("Must specify a climate dataset")
 
-    if(ndvi_gee_dataset == 'users/miswagrace/Landsat_annual_2001_2020'):
+    if(ndvi_gee_dataset == 'users/miswagrace/ndvi_landsat_1999_2020'):
         ndvi_gee_dataset = fetchNDVI()
 
     ndvi_dataset = ee.Image(ndvi_gee_dataset).clip(area)
