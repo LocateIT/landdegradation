@@ -8,7 +8,7 @@ from landdegradation import stats, GEEIOError
 from landdegradation.util import TEImage
 from landdegradation.schemas.schemas import BandInfo
 
-def climate_quality(month, geometry, EXECUTION_ID,logger):
+def climate_quality(month,next_month, geometry, EXECUTION_ID,logger):
     """
     ===========================================================================================
                  CLIMATE QUALITY INDEX (CQI)
@@ -53,7 +53,7 @@ def climate_quality(month, geometry, EXECUTION_ID,logger):
     fieldOrientation = fieldOrientation.updateMask(fieldOrientation.neq(-32768))
 
     ecmwf = ee.ImageCollection("ECMWF/ERA5/MONTHLY") \
-        .filter(ee.Filter.date('{}-01'.format(month), '{}-01'.format(month))) \
+        .filter(ee.Filter.date('{}'.format(month), '{}'.format(next_month))) \
         .first() \
         .clip(geometry)
 
