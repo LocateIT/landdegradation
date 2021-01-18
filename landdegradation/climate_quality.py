@@ -101,7 +101,7 @@ def climate_quality(month,next_month, geometry, EXECUTION_ID,logger):
     climateQuality = climateQuality.updateMask(climateQuality.neq(-32768))
     
     return TEImage(climateQuality.clip(geometry),
-        [BandInfo("Climate Quality Index (month) ", add_to_map=True, metadata={'month':month})])
+        [BandInfo("Climate Quality Index (month)", add_to_map=True, metadata={'month':month})])
 
 
 
