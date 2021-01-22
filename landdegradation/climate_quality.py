@@ -83,7 +83,7 @@ def climate_quality(month,next_month, geometry, EXECUTION_ID,logger):
     logger.debug("Calculating climate quality")
 
     cqi = ee.Image()
-    cqi = cqi.expression('(rainfall * aspect *aridity_index) ** (1/3)', {
+    cqi = cqi.expression('(rainfall * aspect * aridity_index) ** (1/3)', {
         'rainfall':rainfallClass,
         'aspect':fieldOrientation,
         'aridity_index':aridityClass,
@@ -103,7 +103,3 @@ def climate_quality(month,next_month, geometry, EXECUTION_ID,logger):
     return TEImage(climateQuality.clip(geometry),
         [BandInfo("Climate Quality Index (month)", add_to_map=True, metadata={'month':month})])
 
-
-
-
-    
