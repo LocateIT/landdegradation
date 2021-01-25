@@ -41,6 +41,7 @@ def climate_quality(month,next_month, geometry, EXECUTION_ID,logger):
     # aspect(exposure)
     srtm = ee.Image("USGS/SRTMGL1_003").clip(geometry)
 
+    logger.debug("Calculating field orientation")
     # // converted to millimeteres
     aspect = ee.Terrain.aspect(srtm)
     fieldOrientation = ee.Image(-32768) \
