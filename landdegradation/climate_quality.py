@@ -45,9 +45,9 @@ def climate_quality(month,next_month, geometry, EXECUTION_ID,logger):
     # // converted to millimeteres
     aspect = ee.Terrain.aspect(srtm)
     fieldOrientation = ee.Image(-32768) \
-        .where(aspect.gte(0).And(aspect.lte(112.5)), 1) \
-        .where(aspect.gte(247.5).And(aspect.lte(360)), 2) \
-        .where(aspect.gte(112.5).And(aspect.lte(247.5)), 3)
+        .where(aspect.gte(0).And(aspect.lt(112.5)), 1) \
+        .where(aspect.gte(247.5).And(aspect.lt(360)), 2) \
+        .where(aspect.gte(112.5).And(aspect.lt(247.5)), 3)
 
     # // combine fieldOrientation class 1 and 2
     fieldOrientation = fieldOrientation \
@@ -60,7 +60,7 @@ def climate_quality(month,next_month, geometry, EXECUTION_ID,logger):
     fieldOrientation = fieldOrientation.updateMask(fieldOrientation.neq(-32768))
 
     ecmwf = ee.ImageCollection("ECMWF/ERA5/MONTHLY") \
-        .filter(ee.Filter.date('{}'.format(month), '{}'.format(next_month))) \
+        .filter(ee.Filter.date('{}-01'.format(month), '{}-01'.format(next_month))) \
         .first() \
         .clip(geometry)
 
@@ -73,11 +73,11 @@ def climate_quality(month,next_month, geometry, EXECUTION_ID,logger):
     # reclassify rainfall values into 3 classes
     aridityClass =ee.Image(-32768) \
         .where(aridity_index.lt(50), 1) \
-        .where(aridity_index.gte(50).And(aridity_index.lte(75)), 1.1) \
-        .where(aridity_index.gte(75).And(aridity_index.lte(100)), 1.2) \
-        .where(aridity_index.gte(100).And(aridity_index.lte(125)), 1.4) \
-        .where(aridity_index.gte(125).And(aridity_index.lte(150)), 1.8) \
-        .where(aridity_index.gt(150), 2) \
+        .where(aridity_index.gte(50).And(aridity_index.lt(75)), 1.1) \
+        .where(aridity_index.gte(75).And(aridity_index.lt(100)), 1.2) \
+        .where(aridity_index.gte(100).And(aridity_index.lt(125)), 1.4) \
+        .where(aridity_index.gte(125).And(aridity_index.lt(150)), 1.8) \
+        .where(aridity_index.gte(150), 2) \
         .rename("Aridity Index")
   
     # remove no data values
@@ -104,7 +104,7 @@ def climate_quality(month,next_month, geometry, EXECUTION_ID,logger):
         .rename('Climate Quality')
 
     # remove no data values
-    # climateQuality = climateQuality.where(climateQuality.eq(9999), -32768)
+    cqi = cqi.where(cqi.eq(9999), -32768)
     cqi = cqi.updateMask(cqi.neq(-32768))
     
     return TEImage(cqi,
