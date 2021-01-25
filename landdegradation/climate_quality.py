@@ -98,8 +98,8 @@ def climate_quality(month,next_month, geometry, EXECUTION_ID,logger):
 
     # remove no data values
     # climateQuality = climateQuality.where(climateQuality.eq(9999), -32768)
-    # climateQuality = climateQuality.updateMask(climateQuality.neq(-32768))
+    cqi = cqi.updateMask(cqi.neq(-32768))
     
-    return TEImage(cqi.clip(geometry),
+    return TEImage(cqi,
         [BandInfo("Climate Quality Index (month)", add_to_map=True, metadata={'month':month})])
 
