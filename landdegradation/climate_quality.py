@@ -48,6 +48,12 @@ def climate_quality(month,next_month, geometry, EXECUTION_ID,logger):
         .where(aspect.gte(247.5).And(aspect.lte(360)), 2) \
         .where(aspect.gte(112.5).And(aspect.lte(247.5)), 3)
 
+    # // combine fieldOrientation class 1 and 2
+    fieldOrientation = fieldOrientation \
+        .where(fieldOrientation.eq(1).And(fieldOrientation.eq(2)), 1) \
+        .where(fieldOrientation.eq(3), 2) \
+        .rename("Field Orientation")
+
     # // remove no data values
     # // fieldOrientation = fieldOrientation.where(fieldOrientation.eq(9999), -32768)
     fieldOrientation = fieldOrientation.updateMask(fieldOrientation.neq(-32768))
