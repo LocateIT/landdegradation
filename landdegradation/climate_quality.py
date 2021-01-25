@@ -108,8 +108,8 @@ def climate_quality(month,next_month, geometry, EXECUTION_ID,logger):
     cqi = cqi.updateMask(cqi.neq(-32768))
     
     return TEImage(cqi.addBands(rainfallClass).addBands(fieldOrientation).addBands(aridityClass),
-        [BandInfo("Climate Quality Index (month)", add_to_map=True, metadata={'month':month})],
-        [BandInfo("Rainfall", add_to_map=True, metadata={'month':month})],
-        [BandInfo("Field orientation", add_to_map=True, metadata={'month':month})],
-        [BandInfo("Aridity", add_to_map=True, metadata={'month':month})])
+        [BandInfo("Climate Quality Index (month)", add_to_map=True, metadata={'month':month}),
+        BandInfo("Rainfall", add_to_map=True, metadata={'month':month}),
+        BandInfo("Field orientation", add_to_map=True, metadata={'month':month}),
+        BandInfo("Aridity", add_to_map=True, metadata={'month':month})])
 
