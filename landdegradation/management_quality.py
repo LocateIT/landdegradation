@@ -26,7 +26,7 @@ def management_quality(year, lu_matrix, geometry, EXECUTION_ID,logger):
 
     # DEFINE LAND USE INTENSITY
     # Remap LC according to input matrix
-    lc_remapped_lu = lc.select('y'+year).remap(lu_remap_matrix[0], lu_remap_matrix[1]).divide(10)
+    lc_remapped_lu = lc.select('y'+'{}'.format(year)).remap(lu_remap_matrix[0], lu_remap_matrix[1]).divide(10)
 
     # DEFINE POPULATION INTENSITY
     population_density = ee.ImageCollection("CIESIN/GPWv411/GPW_Population_Density").toList(5)
