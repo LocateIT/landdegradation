@@ -90,16 +90,16 @@ def climate_quality(month,next_month, geometry, EXECUTION_ID,logger):
         }).rename('cqi')
 
     # classify climate quality values based on ranges
-    climateQuality = ee.Image(-32768) \
+    cqi = cqi \
         .where(cqi.lt(1.15), 1) \
         .where(cqi.gte(1.15).And(cqi.lte(1.81)), 2) \
         .where(cqi.gt(1.81), 3) \
         .rename('Climate Quality')
 
     # remove no data values
-    climateQuality = climateQuality.where(climateQuality.eq(9999), -32768)
-    climateQuality = climateQuality.updateMask(climateQuality.neq(-32768))
+    # climateQuality = climateQuality.where(climateQuality.eq(9999), -32768)
+    # climateQuality = climateQuality.updateMask(climateQuality.neq(-32768))
     
-    return TEImage(climateQuality.clip(geometry),
+    return TEImage(cqi.clip(geometry),
         [BandInfo("Climate Quality Index (month)", add_to_map=True, metadata={'month':month})])
 
