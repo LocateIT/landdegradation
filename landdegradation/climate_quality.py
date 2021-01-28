@@ -50,14 +50,14 @@ def climate_quality(month,next_month, geometry, EXECUTION_ID,logger):
         .where(aspect.gte(112.5).And(aspect.lt(247.5)), 3)
 
     # // combine fieldOrientation class 1 and 2
-    fieldOrientation = fieldOrientation \
+    fieldOrientations = fieldOrientation \
         .where(fieldOrientation.eq(1).And(fieldOrientation.eq(2)), 1) \
         .where(fieldOrientation.eq(3), 2) \
         .rename("Field Orientation")
 
     # // remove no data values
     # // fieldOrientation = fieldOrientation.where(fieldOrientation.eq(9999), -32768)
-    fieldOrientation = fieldOrientation.updateMask(fieldOrientation.neq(-32768))
+    fieldOrientations = fieldOrientations.updateMask(fieldOrientations.neq(-32768))
 
     ecmwf = ee.ImageCollection("ECMWF/ERA5/MONTHLY") \
         .filter(ee.Filter.date('{}-01'.format(month), '{}-01'.format(next_month))) \
@@ -107,7 +107,7 @@ def climate_quality(month,next_month, geometry, EXECUTION_ID,logger):
     cqi = cqi.where(cqi.eq(9999), -32768)
     cqi = cqi.updateMask(cqi.neq(-32768))
     
-    return TEImage(cqi.addBands(rainfallClass).addBands(fieldOrientation).addBands(aridityClass).int16(),
+    return TEImage(cqi.addBands(rainfallClass).addBands(fieldOrientations).addBands(aridityClass).int16(),
         [BandInfo("Climate Quality Index (month)", add_to_map=True, metadata={'month':month}),
         BandInfo("Rainfall", add_to_map=True, metadata={'month':month}),
         BandInfo("Field orientation", add_to_map=True, metadata={'month':month}),
