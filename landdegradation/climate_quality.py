@@ -43,16 +43,16 @@ def climate_quality(month,next_month, geometry, EXECUTION_ID,logger):
     'evapotranspiration':evapotrans,
     }).rename('aridityIndex')
 
-    aridityIndex = aridityIndex
-        .where(aridityIndex.gte(1.0), 1)
-        .where(aridityIndex.gte(0.75).And(aridityIndex.lt(1.0)), 1.05)
-        .where(aridityIndex.gte(0.65).And(aridityIndex.lt(0.75)), 1.15)
-        .where(aridityIndex.gte(0.50).And(aridityIndex.lt(0.65)), 1.25)
-        .where(aridityIndex.gte(0.35).And(aridityIndex.lt(0.50)), 1.35)
-        .where(aridityIndex.gte(0.20).And(aridityIndex.lt(0.35)), 1.45)
-        .where(aridityIndex.gte(0.10).And(aridityIndex.lt(0.20)), 1.55)
-        .where(aridityIndex.gte(0.03).And(aridityIndex.lt(0.10)), 1.75)
-        .where(aridityIndex.lt(0.03), 2)
+    aridityIndex = aridityIndex \
+        .where(aridityIndex.gte(1.0), 1) \
+        .where(aridityIndex.gte(0.75).And(aridityIndex.lt(1.0)), 1.05) \
+        .where(aridityIndex.gte(0.65).And(aridityIndex.lt(0.75)), 1.15) \
+        .where(aridityIndex.gte(0.50).And(aridityIndex.lt(0.65)), 1.25) \
+        .where(aridityIndex.gte(0.35).And(aridityIndex.lt(0.50)), 1.35) \
+        .where(aridityIndex.gte(0.20).And(aridityIndex.lt(0.35)), 1.45) \
+        .where(aridityIndex.gte(0.10).And(aridityIndex.lt(0.20)), 1.55) \
+        .where(aridityIndex.gte(0.03).And(aridityIndex.lt(0.10)), 1.75) \
+        .where(aridityIndex.lt(0.03), 2) \
         .rename("Aridity Index")
 
 
@@ -71,7 +71,7 @@ def climate_quality(month,next_month, geometry, EXECUTION_ID,logger):
         [BandInfo("Climate Quality Index (month)", add_to_map=True, metadata={'month':month})]
     )
 
-    
+
 
 # def climate_quality(month,next_month, geometry, EXECUTION_ID,logger):
 #     """
