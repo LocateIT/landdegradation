@@ -144,7 +144,7 @@ def soil_quality(depth, texture_matrix, pmaterial_matrix, geometry, EXECUTION_ID
         .where(sqi.gte(1.13).And(sqi.lte(1.45)), 2) \
         .where(sqi.gt(1.46), 3)
     
-    return TEImage(sqi,
+    return TEImage(sqi.int16(),
         [BandInfo("Soil Quality Index (cm deep)", add_to_map=True, metadata={'depth':depth})])
 
 
