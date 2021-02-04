@@ -67,6 +67,11 @@ def climate_quality(month,next_month, geometry, EXECUTION_ID,logger):
         .where(cqi.gt(1.81), 3) \
         .rename('Climate Quality Reclass')
 
+    srtm_proj = ee.Image("USGS/SRTMGL1_003").projection()
+
+    # resample parent material to srtm projection
+    cqi_class = cqi_class.reproject(crs=srtm_proj)
+    
     return TEImage(cqi_class.clip(geometry),
         [BandInfo("Climate Quality Index (month)", add_to_map=True, metadata={'month':month})]
     )

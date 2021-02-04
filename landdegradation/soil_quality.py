@@ -9,7 +9,7 @@ from landdegradation.util import TEImage
 from landdegradation.schemas.schemas import BandInfo
 
 
-def soil_quality(depth, texture_matrix, pmaterial_matrix, geometry, EXECUTION_ID, logger):
+def soil_quality(depth, texture_matrix, geometry, EXECUTION_ID, logger):
     """
     ===========================================================================================
                  SOIL QUALITY INDEX (SQI)
@@ -29,24 +29,26 @@ def soil_quality(depth, texture_matrix, pmaterial_matrix, geometry, EXECUTION_ID
     """
 
     logger.debug("Entering soil quality function.")
+    srtm = ee.Image("USGS/SRTMGL1_003")
 
     # ==========================
     # PARENT MATERIAL
     # ==========================
 
-    parent_material_map = [
-      [1,2,3,4,5,6,7,8,9, 10, 11, 12, 13, 14, 15],pmaterial_matrix]
+    # parent_material_map = [
+    #   [1,2,3,4,5,6,7,8,9, 10, 11, 12, 13, 14, 15],pmaterial_matrix]
 
-    parent_material = ee.Image("users/miswagrace/tunisia_parent_material")
+    parent_material = ee.Image("users/miswagrace/parent_material_northafrica").clip(geometry)
 
+    # resample parent material to srtm projection
+    parent_material = parent_material.reproject(crs=srtm.projection())
     # remap parent material 
-    parent_material = parent_material.remap(parent_material_map[0], parent_material_map[1])
+    # parent_material = parent_material.remap(parent_material_map[0], parent_material_map[1])
 
     # ==========================
     # SLOPE
     # ==========================
 
-    srtm = ee.Image("USGS/SRTMGL1_003")
     slope = ee.Terrain.slope(srtm).clip(geometry)
 
     # convert slope to radians

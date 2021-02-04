@@ -20,25 +20,25 @@ def tc(geometry, fc_threshold, year_start, year_end, method, biomass_data, EXECU
     ##############################################
     # DATASETS
     # Import Hansen global forest dataset
-    hansen = ee.Image('UMD/hansen/global_forest_change_2019_v1_7').clip(area)
+    hansen = ee.Image('UMD/hansen/global_forest_change_2019_v1_7').clip(geometry)
 
     # Aboveground Live Woody Biomass per Hectare (Mg/Ha)
     if biomass_data == 'woodshole':
         agb = ee.ImageCollection("users/geflanddegradation/toolbox_datasets/forest_agb_30m_gfw").mosaic().unmask(0)
     elif biomass_data == 'geocarbon':
-        agb = ee.Image("users/geflanddegradation/toolbox_datasets/forest_agb_1km_geocarbon").clip(area)
+        agb = ee.Image("users/geflanddegradation/toolbox_datasets/forest_agb_1km_geocarbon").clip(geometry)
     else:
         agb = None
     # All datasets will be reprojected to Hansen resolution
     agb = agb.reproject(crs=hansen.projection())
 
     # JRC Global Surface Water Mapping Layers, v1.0 (>50% occurrence)
-    water = ee.Image("JRC/GSW1_0/GlobalSurfaceWater").select("occurrence").clip(area)
+    water = ee.Image("JRC/GSW1_0/GlobalSurfaceWater").select("occurrence").clip(geometry)
     water = water.reproject(crs=hansen.projection())
 
     # reclass to 1.broadleaf, 2.conifer, 3.mixed, 4.savanna
     f_type = ee.Image("users/geflanddegradation/toolbox_datasets/esa_forest_expanded_2015") \
-        .clip(area) \
+        .clip(geometry) \
         .remap([50,60,61,62,70,71,72,80,81,82,90,100,110],
                [ 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3,  3,  3])
     f_type = f_type.reproject(crs=hansen.projection())
@@ -49,7 +49,7 @@ def tc(geometry, fc_threshold, year_start, year_end, method, biomass_data, EXECU
     # 6-Polar Dry, 7-Boreal Moist, 8-Boreal Dry, 9-Tropical Montane, 10-Tropical Wet, 11-Tropical Moist, 12-Tropical Dry) to
     # 0: no data, 1:trop/sub moist, 2: trop/sub dry, 3: temperate)
     climate = ee.Image("users/geflanddegradation/toolbox_datasets/ipcc_climate_zones") \
-        .clip(area) \
+        .clip(geometry) \
         .remap([0,1,2,3,4,5,6,7,8,9,10,11,12],
                [0,1,2,3,3,3,3,3,3,1, 1, 1, 2])
     climate = climate.reproject(crs=hansen.projection())
@@ -120,10 +120,9 @@ def tc(geometry, fc_threshold, year_start, year_end, method, biomass_data, EXECU
         .addBands((rs_ratio.multiply(100)).multiply(fc_str)).unmask(-32768) \
         .addBands((tbcarbon.multiply(10)).multiply(fc_str)).unmask(-32768)
     output = output.reproject(crs=hansen.projection())
-    output = output.clip(area)
 
     logger.debug("Setting up output.")
-    out = TEImage(output.clip(area).int16(),
+    out = TEImage(output.clip(geometry).int16(),
                   [BandInfo("Forest loss", add_to_map=True, metadata={'year_start': year_start,
                                                                       'year_end': year_end,
                                                                       'ramp_min': year_start - 2000 + 1,
