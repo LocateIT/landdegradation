@@ -14,9 +14,9 @@ def tc(geometry, fc_threshold, year_start, year_end, method, biomass_data, EXECU
     Calculate total carbon (in belowground and aboveground biomass).
     """
     logger.debug("Entering tc function.")
-    geom = ee.Geometry.Polygon(geometry)
+    # geom = ee.Geometry.Polygon(geometry)
     # Location
-    area = ee.FeatureCollection(geom)
+    # area = ee.FeatureCollection(geom)
     ##############################################
     # DATASETS
     # Import Hansen global forest dataset
