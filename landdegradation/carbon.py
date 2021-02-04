@@ -122,7 +122,7 @@ def tc(geometry, fc_threshold, year_start, year_end, method, biomass_data, EXECU
     output = output.reproject(crs=hansen.projection())
 
     logger.debug("Setting up output.")
-    out = TEImage(output.clip(geometry).int16(),
+    out = TEImage(output.int16().clip(geometry),
                   [BandInfo("Forest loss", add_to_map=True, metadata={'year_start': year_start,
                                                                       'year_end': year_end,
                                                                       'ramp_min': year_start - 2000 + 1,
