@@ -49,7 +49,7 @@ def soil_quality(depth, texture_matrix, geometry, EXECUTION_ID, logger):
     # SLOPE
     # ==========================
     slope = ee.Image("users/miswagrace/slope_north_africa").clip(geometry)
-    slope = slope.reproject(crs=srtm.projection())
+  
     # slope = ee.Terrain.slope(srtm).clip(geometry)
 
     # # convert slope to radians
