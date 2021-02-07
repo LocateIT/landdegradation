@@ -48,26 +48,26 @@ def soil_quality(depth, texture_matrix, geometry, EXECUTION_ID, logger):
     # ==========================
     # SLOPE
     # ==========================
+    slope = ee.Image("users/miswagrace/slope_north_africa").clip(geometry)
+    # slope = ee.Terrain.slope(srtm).clip(geometry)
 
-    slope = ee.Terrain.slope(srtm).clip(geometry)
+    # # convert slope to radians
+    # slopeRad = slope.multiply(0.0174533)
 
-    # convert slope to radians
-    slopeRad = slope.multiply(0.0174533)
+    # # convert slope radians to percentage
+    # slopePercent = slopeRad.atan().multiply(100)
 
-    # convert slope radians to percentage
-    slopePercent = slopeRad.atan().multiply(100)
+    # # reclassify slope according to ranges
+    # slopeClass = ee.Image(-32768) \
+    #     .where(slopePercent.lt(6), 1) \
+    #     .where(slopePercent.gte(6).And(slopePercent.lte(18)), 1.2) \
+    #     .where(slopePercent.gte(18).And(slopePercent.lte(35)), 1.5) \
+    #     .where(slopePercent.gt(35), 2) \
+    #     .rename("Slope Class")
 
-    # reclassify slope according to ranges
-    slopeClass = ee.Image(-32768) \
-        .where(slopePercent.lt(6), 1) \
-        .where(slopePercent.gte(6).And(slopePercent.lte(18)), 1.2) \
-        .where(slopePercent.gte(18).And(slopePercent.lte(35)), 1.5) \
-        .where(slopePercent.gt(35), 2) \
-        .rename("Slope Class")
-
-    # remove no data values
-    slopeClass = slopeClass.where(slopeClass.eq(9999), -32768)
-    slopeClass = slopeClass.updateMask(slopeClass.neq(-32768))
+    # # remove no data values
+    # slopeClass = slopeClass.where(slopeClass.eq(9999), -32768)
+    # slopeClass = slopeClass.updateMask(slopeClass.neq(-32768))
 
     # ==========================
     # TEXTURE
@@ -132,7 +132,7 @@ def soil_quality(depth, texture_matrix, geometry, EXECUTION_ID, logger):
     # compute soil quality index based on datasetes generated above
     img = ee.Image()
     sqi = img.expression('(slope * parent_material * soil_texture * soil_depth * rock_fragment *drainage) ** (1/6)', {
-        'slope':slopeClass,
+        'slope':slope,
         'parent_material':parent_material,
         'soil_texture':soil_texture_remap,
         'soil_depth':depthIndex,
