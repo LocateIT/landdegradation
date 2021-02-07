@@ -49,6 +49,7 @@ def soil_quality(depth, texture_matrix, geometry, EXECUTION_ID, logger):
     # SLOPE
     # ==========================
     slope = ee.Image("users/miswagrace/slope_north_africa").clip(geometry)
+    slope = slope.reproject(crs=srtm.projection())
     # slope = ee.Terrain.slope(srtm).clip(geometry)
 
     # # convert slope to radians
@@ -146,8 +147,7 @@ def soil_quality(depth, texture_matrix, geometry, EXECUTION_ID, logger):
         .where(sqi.gte(1.13).And(sqi.lte(1.45)), 2) \
         .where(sqi.gt(1.46), 3)
     
-    sqi = sqi.reproject(crs=srtm.projection())
-    
+
     return TEImage(sqi,
         [BandInfo("Soil Quality Index (cm deep)", add_to_map=True, metadata={'depth':depth})])
 
