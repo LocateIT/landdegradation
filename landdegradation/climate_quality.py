@@ -8,7 +8,7 @@ from landdegradation import stats, GEEIOError
 from landdegradation.util import TEImage
 from landdegradation.schemas.schemas import BandInfo
 
-def climate_quality(month,next_month, geometry, EXECUTION_ID,logger):
+def climate_quality(year, geometry, EXECUTION_ID,logger):
     """
     ===========================================================================================
                  CLIMATE QUALITY INDEX (CQI)
@@ -18,8 +18,8 @@ def climate_quality(month,next_month, geometry, EXECUTION_ID,logger):
     logger.debug("Entering climate quality function.")
 
     terra_climate = ee.ImageCollection("IDAHO_EPSCOR/TERRACLIMATE") \
-                .filter(ee.Filter.date('{}-01'.format(month), '{}-01'.format(next_month))) \
-                .first() \
+                .filter(ee.Filter.date('{}-01-01'.format(year), '{}-12-31'.format(year))) \
+                .mean() \
                 .clip(geometry)
 
     precipitation = terra_climate.select('pr')
