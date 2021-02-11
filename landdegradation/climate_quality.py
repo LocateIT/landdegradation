@@ -73,7 +73,7 @@ def climate_quality(year, geometry, EXECUTION_ID,logger):
     cqi_class = cqi_class.reproject(crs=srtm_proj)
     
     return TEImage(cqi_class.clip(geometry),
-        [BandInfo("Climate Quality Index (month)", add_to_map=True, metadata={'month':month})]
+        [BandInfo("Climate Quality Index (year)", add_to_map=True, metadata={'year':year})]
     )
 
 
