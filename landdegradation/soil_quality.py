@@ -120,13 +120,14 @@ def soil_quality(depth, texture_matrix, geometry, EXECUTION_ID, logger):
     # SOIL DRAINAGE
     # ==========================
     # classify rock fragment based on 3 classes
-    drainage = ee.Image("users/miswagrace/soil_drainage")
-    soil_drainage = ee.Image(-32768) \
-        .where(drainage.lte(2), 2) \
-        .where(drainage.eq(3), 1.2) \
-        .where(drainage.gt(3), 1) \
-        .rename("Soil Drainage")
-
+    # drainage = ee.Image("users/miswagrace/soil_drainage")
+    # soil_drainage = ee.Image(-32768) \
+    #     .where(drainage.lte(2), 2) \
+    #     .where(drainage.eq(3), 1.2) \
+    #     .where(drainage.gt(3), 1) \
+    #     .rename("Soil Drainage")
+    drainage = ee.Image("users/miswagrace/drainage_north_africa")
+    soil_drainage = drainage.remap([1,2,3,4,5,6,7],[2.0, 2.0, 1.4, 1.2, 1.0, 1.7, 2.0])
     # ==========================
     # SOIL QUALITY INDEX
     # ========================== 
