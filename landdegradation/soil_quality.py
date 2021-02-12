@@ -39,6 +39,7 @@ def soil_quality(depth, texture_matrix, geometry, EXECUTION_ID, logger):
     #   [1,2,3,4,5,6,7,8,9, 10, 11, 12, 13, 14, 15],pmaterial_matrix]
 
     parent_material = ee.Image("users/miswagrace/parent_material_northafrica").clip(geometry)
+    parent_material = parent_material.remap([1.0, 1.2, 1.4, 1.5, 1.6, 1.7, 2.0],[1.0, 1.7, 1.7, 1.7, 1.7, 1.7, 2.0])
 
     # resample parent material to srtm projection
     parent_material = parent_material.reproject(crs=srtm.projection())
@@ -54,9 +55,10 @@ def soil_quality(depth, texture_matrix, geometry, EXECUTION_ID, logger):
     # ==========================
     # TEXTURE
     # ==========================    
-    soil_texture = ee.Image("OpenLandMap/SOL/SOL_TEXTURE-CLASS_USDA-TT_M/v02").clip(geometry)
+    # soil_texture = ee.Image("OpenLandMap/SOL/SOL_TEXTURE-CLASS_USDA-TT_M/v02").clip(geometry)
+    soil_texture = ee.Image("users/miswagrace/texture_north_africa").clip(geometry)
     remap_texture = [
-        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],texture_matrix]
+        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],texture_matrix]
 
     # remap texture 
     soil_texture_remap = soil_texture.remap(remap_texture[0], remap_texture[1])
