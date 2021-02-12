@@ -75,13 +75,13 @@ def soil_quality(depth, texture_matrix, geometry, EXECUTION_ID, logger):
     # DEPTH
     # ==========================
     if depth<15 :
-        depthIndex = 1
-    elif depth>=15 and depth<30:
-        depthIndex = 2
-    elif depth>=30 and depth<75:
-        depthIndex = 3
-    elif depth>=75:
         depthIndex = 4
+    elif depth>=15 and depth<30:
+        depthIndex = 3
+    elif depth>=30 and depth<75:
+        depthIndex = 2
+    elif depth>=75:
+        depthIndex = 1
     else:
         logger.debug("Unexpected depth value")
 
@@ -120,7 +120,7 @@ def soil_quality(depth, texture_matrix, geometry, EXECUTION_ID, logger):
     sqi = sqi \
         .where(sqi.lt(1.13), 1) \
         .where(sqi.gte(1.13).And(sqi.lte(1.45)), 2) \
-        .where(sqi.gt(1.46), 3)
+        .where(sqi.gt(1.45), 3)
     
 
     return TEImage(sqi,
