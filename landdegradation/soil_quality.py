@@ -62,14 +62,14 @@ def soil_quality(depth, texture_matrix, geometry, EXECUTION_ID, logger):
 
     # remap texture 
     soil_texture_remap = soil_texture.remap(remap_texture[0], remap_texture[1])
-    soil_texture_remap = soil_texture_remap \
-        .where(soil_texture_remap.eq(1), 1) \
-        .where(soil_texture_remap.eq(2), 1.2) \
-        .where(soil_texture_remap.eq(3), 1.6) \
-        .where(soil_texture_remap.eq(4), 2) \
-        .rename("Soil Texture")
+    # soil_texture_remap = soil_texture_remap \
+    #     .where(soil_texture_remap.eq(1), 1) \
+    #     .where(soil_texture_remap.eq(2), 1.2) \
+    #     .where(soil_texture_remap.eq(3), 1.6) \
+    #     .where(soil_texture_remap.eq(4), 2) \
+    #     .rename("Soil Texture")
 
-    soil_texture_remap = soil_texture_remap.updateMask(soil_texture_remap.neq(-32768))
+    # soil_texture_remap = soil_texture_remap.updateMask(soil_texture_remap.neq(-32768))
 
     # ==========================
     # DEPTH
