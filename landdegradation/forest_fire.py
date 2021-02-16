@@ -104,6 +104,17 @@ def forest_fire(geometry,prefire_start,prefire_end,postfire_start,postfire_end, 
     # Scale product to USGS standards
     dNBR = dNBR_unscaled.multiply(1000)
 
+    # reclassify dnbr
+    dNBR = dNBR \
+        .where(dNBR.gte(-500).And(dNBR.lte(-251)), 1) \
+        .where(dNBR.gte(-250).And(dNBR.lte(-101)), 2) \
+        .where(dNBR.gte(-100).And(dNBR.lte(99)), 3) \
+        .where(dNBR.gte(100).And(dNBR.lte(269)), 4) \
+        .where(dNBR.gte(270).And(dNBR.lte(439)), 5) \
+        .where(dNBR.gte(440).And(dNBR.lte(659)), 6) \
+        .where(dNBR.gte(660).And(dNBR.lte(1300)), 7) \
+        .rename("dNBR")
+
     return TEImage(dNBR.addBands(preNBR).addBands(postNBR),
         [BandInfo("dNBR image", add_to_map=True, metadata={'prefire_start':prefire_start,'prefire_end':prefire_end, 'postfire_start':postfire_start, 'postfire_end':postfire_end}),
          BandInfo("Prefire Normalized Burn Ratio", add_to_map=True,metadata={'prefire_start':prefire_start,'prefire_end':prefire_end}),
